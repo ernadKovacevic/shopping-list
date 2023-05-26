@@ -5,7 +5,6 @@ const clearAllButton = document.getElementById('clear');
 const itemFilter = document.querySelector('.filter');
 items = document.querySelectorAll('li');
 
-
 // --------------------- ADD ITEMS TO LIST --------------------------------
 const onAddItemSubmit = (e) => {
   e.preventDefault();
@@ -24,17 +23,20 @@ const addItemToDOM = (newItem) => {
 }
 
 const addItemToStorage = (item) => {
-  let itemsFromStorage;
 
-  if(localStorage.getItem('items') === null){
-    itemsFromStorage = [];
-  }else {
-    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  if (item.length !== 0){
+    let itemsFromStorage;
+
+    if(localStorage.getItem('items') === null){
+      itemsFromStorage = [];
+    }else {
+      itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    }
+  
+    itemsFromStorage.push(item);
+  
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
   }
-
-  itemsFromStorage.push(item);
-
-  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 const createListItem = (item) => {
@@ -93,6 +95,19 @@ const showFilterAndClearButton = () => {
   itemFilter.style.display = 'block';
 }
 
+
+//----------- FETCH ITEMS FROM LOCAL STORAGE ---------------
+window.onload = (e) => {
+  let loadItems = JSON.parse(localStorage.getItem('items'));
+
+  if (loadItems !== null){
+    loadItems.forEach((item) => {
+      addItemToDOM(item)
+    })
+  }
+}
+
+
 //-------- FILTER ITEMS -------
 const filterItems = (e) => {
   items.forEach((item) => {
@@ -103,7 +118,6 @@ const filterItems = (e) => {
       }
   })
 }
-
 
 itemForm.addEventListener('submit', onAddItemSubmit);
 clearAllButton.addEventListener('click', deleteAllItems);

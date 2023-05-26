@@ -81,6 +81,7 @@ header h1 {
 }
 
 .btn-clear {
+  display: none;  /* added */
   margin-top: 20px;
   width: 100%;
   font-size: 16px;
@@ -118,6 +119,12 @@ header h1 {
   margin: 0 5px 20px;
   font-weight: 700;
 }
+
+
+.filter {
+  display: none;
+}
+
 
 @media (max-width: 500px) {
   .items li {
