@@ -3,14 +3,34 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearAllButton = document.getElementById('clear');
 const itemFilter = document.querySelector('.filter');
-items = document.querySelectorAll('li');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
 
 // --------------------- ADD ITEMS TO LIST --------------------------------
 const onAddItemSubmit = (e) => {
   e.preventDefault();
+
+  //Check for edit mode
+
+  if (isEditMode) {
+      const itemToEdit = itemList.querySelector('.edit-mode');
+      deleteItemFromStorage (itemToEdit.textContent);
+      itemToEdit.classList.remove('edit-mode');
+      itemToEdit.remove();
+      isEditMode = false;
+  }
+
+
   const newItem= new FormData(itemForm).get('item');
-  addItemToDOM(newItem);
-  addItemToStorage(newItem);
+
+  if(!checkIfItemExists(newItem)){
+    addItemToDOM(newItem);
+    addItemToStorage(newItem);
+    checkUI();
+  }else {
+    alert('Item already exists')
+  }
+
 }
 
 const addItemToDOM = (newItem) => {
@@ -46,7 +66,7 @@ const createListItem = (item) => {
   const button = createDeleteButton();
   li.appendChild(button);
   itemList.appendChild(li);
-
+  li.addEventListener('click', onUpdate);
   return li;
 }
 
@@ -77,7 +97,7 @@ const deleteItem = (e) => {
     const li = e.target.parentNode.parentNode;
     itemList.removeChild(li);
 
-    items = document.querySelectorAll('li');
+    const items = document.querySelectorAll('li');
 
     if (items.length === 0) {
       hideFilterAndClearButton();
@@ -110,6 +130,52 @@ const showFilterAndClearButton = () => {
   itemFilter.style.display = 'block';
 }
 
+const checkUI = () => {
+  itemInput.value = '';
+  formBtn.innerHTML = `
+                  <i class="fa-solid fa-plus"></i> Add item`
+  formBtn.style.backgroundColor = '#333'
+
+  isEditMode = false;
+}
+
+//----------- UPDATE ITEMS ---------------
+
+const onUpdate = (e) => {
+  if (e.target.tagName === "LI"){
+    isEditMode = true;
+
+    itemList.querySelectorAll('li').forEach (i => {
+      i.classList.remove('edit-mode')
+    });
+
+    e.target.classList.add('edit-mode');
+    formBtn.innerHTML= `
+                      <i class="fa-solid fa-pen"></i>
+                      Update item
+                    `
+    formBtn.style.backgroundColor = '#228B22'
+    itemInput.value = e.target.textContent;
+  }
+}
+
+//------------------- CHECK IF ITEM EXISTS ---------------------
+
+const checkIfItemExists = (item) => {
+  let loadItems = JSON.parse(localStorage.getItem('items'));
+  let result = false;
+  if (loadItems !== null) {
+    loadItems.forEach(el => {
+    
+      if (el.toLowerCase() === item.toLowerCase()){
+        console.log('ernad')
+        result = true;
+      }
+    })
+    return result;
+  }
+}
+
 
 //----------- FETCH ITEMS FROM LOCAL STORAGE ---------------
 window.onload = (e) => {
@@ -123,6 +189,7 @@ window.onload = (e) => {
 }
 
 
+
 //-------- FILTER ITEMS -------
 const filterItems = (e) => {
   items.forEach((item) => {
@@ -133,6 +200,8 @@ const filterItems = (e) => {
       }
   })
 }
+
+checkUI();
 
 itemForm.addEventListener('submit', onAddItemSubmit);
 clearAllButton.addEventListener('click', deleteAllItems);
