@@ -1,7 +1,10 @@
 const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
+const clearButton = document.getElementById('clear');
 
+
+// --------------------- ADD ITEMS TO LIST --------------------------------
 const onSubmit = (e) => {
   e.preventDefault();
   const form = new FormData(itemForm);
@@ -34,5 +37,14 @@ const createDeleteButton = () => {
   return deleteButton;
 }
 
+//---------------   DELETE ALL ITEMS --------------
+
+const deleteAllItems = () => {
+  itemList.remove();
+}
+
+
+
 
 itemForm.addEventListener('submit', onSubmit);
+clearButton.addEventListener('click', deleteAllItems)
