@@ -7,16 +7,34 @@ items = document.querySelectorAll('li');
 
 
 // --------------------- ADD ITEMS TO LIST --------------------------------
-const onSubmit = (e) => {
+const onAddItemSubmit = (e) => {
   e.preventDefault();
-  const form = new FormData(itemForm);
+  const newItem= new FormData(itemForm).get('item');
+  addItemToDOM(newItem);
+  addItemToStorage(newItem);
+}
 
-  if (form.get('item').length != 0){
-    createListItem(form.get('item'));
+const addItemToDOM = (newItem) => {
+  if (newItem.length != 0){
+    createListItem(newItem);
     showFilterAndClearButton();
   }else {
     console.log('Text field empty')
   }
+}
+
+const addItemToStorage = (item) => {
+  let itemsFromStorage;
+
+  if(localStorage.getItem('items') === null){
+    itemsFromStorage = [];
+  }else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  }
+
+  itemsFromStorage.push(item);
+
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 const createListItem = (item) => {
@@ -26,8 +44,9 @@ const createListItem = (item) => {
   const button = createDeleteButton();
   li.appendChild(button);
   itemList.appendChild(li);
-}
 
+  return li;
+}
 
 const createDeleteButton = () => {
   const deleteButton = document.createElement('button');
@@ -41,7 +60,6 @@ const createDeleteButton = () => {
 }
 
 //---------------   DELETE ALL ITEMS --------------
-
 const deleteAllItems = () => {
   while (itemList.firstChild) {
     itemList.firstChild.remove();
@@ -76,8 +94,6 @@ const showFilterAndClearButton = () => {
 }
 
 //-------- FILTER ITEMS -------
-
-
 const filterItems = (e) => {
   items.forEach((item) => {
       if (item.innerText.toLowerCase().includes(e.target.value.toLowerCase())){
@@ -88,7 +104,8 @@ const filterItems = (e) => {
   })
 }
 
-itemForm.addEventListener('submit', onSubmit);
+
+itemForm.addEventListener('submit', onAddItemSubmit);
 clearAllButton.addEventListener('click', deleteAllItems);
 itemList.addEventListener('click', deleteItem);
 itemFilter.addEventListener('input', filterItems)
