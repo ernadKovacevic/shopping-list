@@ -2,6 +2,7 @@ const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearAllButton = document.getElementById('clear');
+const itemFilter = document.querySelector('.filter');
 
 
 // --------------------- ADD ITEMS TO LIST --------------------------------
@@ -11,6 +12,7 @@ const onSubmit = (e) => {
 
   if (form.get('item').length != 0){
     createListItem(form.get('item'));
+    showFilterAndClearButton();
   }else {
     console.log('Text field empty')
   }
@@ -43,15 +45,35 @@ const deleteAllItems = () => {
   while (itemList.firstChild) {
     itemList.firstChild.remove();
   }
+  hideFilterAndClearButton();
 }
 
+//---------------   DELETE ONE BY ONE  --------------
 const deleteItem = (e) => {
   
   if (e.target.tagName === 'I') {
     const li = e.target.parentNode.parentNode;
     itemList.removeChild(li);
+
+    const items = document.querySelectorAll('li');
+
+    if (items.length === 0) {
+      hideFilterAndClearButton();
+    }
   }
 }
+
+// ----- HIDE AND SHOW FILTER INPUT AND CLEAR ALL BUTTON IF LIST EMPTY -----
+const hideFilterAndClearButton = () => {
+  clearAllButton.style.display = 'none';
+  itemFilter.style.display = 'none';
+}
+
+const showFilterAndClearButton = () => {
+  clearAllButton.style.display = 'block';
+  itemFilter.style.display = 'block';
+}
+
 
 
 itemForm.addEventListener('submit', onSubmit);
