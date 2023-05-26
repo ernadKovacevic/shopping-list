@@ -1,7 +1,7 @@
 const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
-const clearButton = document.getElementById('clear');
+const clearAllButton = document.getElementById('clear');
 
 
 // --------------------- ADD ITEMS TO LIST --------------------------------
@@ -40,11 +40,20 @@ const createDeleteButton = () => {
 //---------------   DELETE ALL ITEMS --------------
 
 const deleteAllItems = () => {
-  itemList.remove();
+  while (itemList.firstChild) {
+    itemList.firstChild.remove();
+  }
+}
+
+const deleteItem = (e) => {
+  
+  if (e.target.tagName === 'I') {
+    const li = e.target.parentNode.parentNode;
+    itemList.removeChild(li);
+  }
 }
 
 
-
-
 itemForm.addEventListener('submit', onSubmit);
-clearButton.addEventListener('click', deleteAllItems)
+clearAllButton.addEventListener('click', deleteAllItems);
+itemList.addEventListener('click', deleteItem);
