@@ -3,6 +3,7 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const clearAllButton = document.getElementById('clear');
 const itemFilter = document.querySelector('.filter');
+items = document.querySelectorAll('li');
 
 
 // --------------------- ADD ITEMS TO LIST --------------------------------
@@ -55,7 +56,7 @@ const deleteItem = (e) => {
     const li = e.target.parentNode.parentNode;
     itemList.removeChild(li);
 
-    const items = document.querySelectorAll('li');
+    items = document.querySelectorAll('li');
 
     if (items.length === 0) {
       hideFilterAndClearButton();
@@ -74,8 +75,20 @@ const showFilterAndClearButton = () => {
   itemFilter.style.display = 'block';
 }
 
+//-------- FILTER ITEMS -------
 
+
+const filterItems = (e) => {
+  items.forEach((item) => {
+      if (item.innerText.toLowerCase().includes(e.target.value.toLowerCase())){
+        item.style.display = 'flex';
+      }else {
+        item.style.display = 'none';
+      }
+  })
+}
 
 itemForm.addEventListener('submit', onSubmit);
 clearAllButton.addEventListener('click', deleteAllItems);
 itemList.addEventListener('click', deleteItem);
+itemFilter.addEventListener('input', filterItems)
