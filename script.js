@@ -66,6 +66,7 @@ const deleteAllItems = () => {
   while (itemList.firstChild) {
     itemList.firstChild.remove();
   }
+  localStorage.clear(); //DELETE ALL ITEMS FROM STORAGE
   hideFilterAndClearButton();
 }
 
@@ -81,8 +82,22 @@ const deleteItem = (e) => {
     if (items.length === 0) {
       hideFilterAndClearButton();
     }
+    
+    deleteItemFromStorage(li.textContent);
   }
 }
+
+const deleteItemFromStorage = (item) => {
+
+  const prevItems = JSON.parse(localStorage.getItem('items'));
+  
+  newItems = prevItems.filter((el) => {
+    return el !== item;
+  })
+
+  localStorage.setItem('items', JSON.stringify(newItems))
+}
+
 
 // ----- HIDE AND SHOW FILTER INPUT AND CLEAR ALL BUTTON IF LIST EMPTY -----
 const hideFilterAndClearButton = () => {
